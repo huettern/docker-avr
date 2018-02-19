@@ -58,11 +58,13 @@ RUN sudo apt-get update; \
 # Set colorgcc and ccache
 COPY colorgccrc /etc/colorgcc/colorgccrc
 
+# RUN mkdir  /usr/lib/colorgcc; \
+#     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/c++; \
+#     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/cc ; \
+#     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/gcc; \
+#     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/g++; 
 RUN mkdir  /usr/lib/colorgcc; \
-    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/c++; \
-    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/cc ; \
-    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/gcc; \
-    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/g++; 
+    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/avr-gcc; 
 
 # Builder user
 RUN apt-get update; \
