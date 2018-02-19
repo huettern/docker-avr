@@ -28,14 +28,14 @@
 
 FROM ownyourbits/minidebian
 
-LABEL description="Make wrapper avr gcc, colorgcc and ccache"
+LABEL description="Make wrapper avr gcc and colorgcc"
 MAINTAINER Noah Huetter <noahhuetter@gmail.com>
 
 # Install toolchain 
 # Source: https://github.com/KaDock/avr-toolchain
 RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update \
     && DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
-        make ccache colorgcc \
+        make colorgcc \
         avr-libc \
         avra \
         avrdude \
@@ -50,12 +50,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists
 
-# bc to print compilation time
-RUN sudo apt-get update; \
-    DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends bc; \
-    sudo apt-get autoremove -y; sudo apt-get clean; sudo rm /var/lib/apt/lists/* -r; sudo rm -rf /usr/share/man/*
-
-# Set colorgcc and ccache
+# Set colorgcc
 COPY colorgccrc /etc/colorgcc/colorgccrc
 
 # RUN mkdir  /usr/lib/colorgcc; \
@@ -76,7 +71,6 @@ RUN apt-get update; \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r; rm -rf /usr/share/man/*
 
 RUN echo 'export PATH="/usr/lib/colorgcc/:$PATH"' >> /home/builder/.bashrc; \
-    echo 'export CCACHE_DIR=/src/.ccache'         >> /home/builder/.bashrc; \
     echo 'export TERM="xterm"'                    >> /home/builder/.bashrc; 
 
 COPY bg.sh run.sh /
