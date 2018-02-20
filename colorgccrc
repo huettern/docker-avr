@@ -46,6 +46,7 @@
 
 # avr-gcc
 gcc: /usr/bin/avr-gcc
+avr32-gcc: /usr/local/avr32/bin/avr32-gcc
 
 # Don't do color if our terminal type ($TERM) is one of these.
 # (List all terminal types on one line, seperated by whitespace.)

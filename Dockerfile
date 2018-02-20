@@ -35,20 +35,36 @@ MAINTAINER Noah Huetter <noahhuetter@gmail.com>
 # Source: https://github.com/KaDock/avr-toolchain
 RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update \
     && DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
-        make colorgcc \
-        avr-libc \
+        make colorgcc git \
+        avr32-libc \
         avra \
         avrdude \
         avrp \
         avrprog \
         build-essential \
-        binutils-avr \
+        binutils-avr32 \
         python \
-        gcc-avr \
-        gdb-avr \
+        gcc-avr32 \
+        gdb-avr32 \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists
+
+# AVR32 compiler
+# https://github.com/jsnyder/avr32-toolchain
+# http://lis-epfl.github.io/MAVRIC_Library/Toolchain/AVR32_compiler.html
+# https://github.com/noah95/avr32-toolchain
+RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update; \
+    DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
+        curl flex bison libgmp3-dev libmpfr-dev autoconf build-essential libncurses5-dev libmpc-dev texinfo libusb-dev gperf; \
+    curl -L -O https://github.com/noah95/avr32-toolchain/archive/master.zip; \
+    unzip master.zip; \
+    cd avr32-toolchain-master; \
+    sudo PREFIX=/usr/local/avr32/ make install-cross; \
+    cd ..; \
+    rm -rf master.zip avr32-toolchain-master; \
+    apt-get purge -y curl flex bison libgmp3-dev libmpfr-dev autoconf libncurses5-dev libmpc-dev texinfo; \
+    apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r; rm -rf /usr/share/man/*
 
 # Set colorgcc
 COPY colorgccrc /etc/colorgcc/colorgccrc
@@ -59,7 +75,8 @@ COPY colorgccrc /etc/colorgcc/colorgccrc
 #     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/gcc; \
 #     ln -s /usr/bin/colorgcc /usr/lib/colorgcc/g++; 
 RUN mkdir  /usr/lib/colorgcc; \
-    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/avr-gcc; 
+    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/avr-gcc; \
+    ln -s /usr/bin/colorgcc /usr/lib/colorgcc/avr32-gcc; 
 
 # Builder user
 RUN apt-get update; \
