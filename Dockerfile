@@ -36,16 +36,16 @@ MAINTAINER Noah Huetter <noahhuetter@gmail.com>
 RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update \
     && DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes install \
         make colorgcc git \
-        avr32-libc \
+        avr-libc \
         avra \
         avrdude \
         avrp \
         avrprog \
         build-essential \
-        binutils-avr32 \
+        binutils-avr \
         python \
-        gcc-avr32 \
-        gdb-avr32 \
+        gcc-avr \
+        gdb-avr \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists
