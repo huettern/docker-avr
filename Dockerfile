@@ -60,7 +60,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update; \
     curl -L -O https://github.com/noah95/avr32-toolchain/archive/master.zip; \
     unzip master.zip; \
     cd avr32-toolchain-master; \
-    sudo PREFIX=/usr/local/ make install-cross; \
+    sudo PREFIX=/usr/local/avr-32 make install-cross; \
     cd ..; \
     rm -rf master.zip avr32-toolchain-master; \
     apt-get purge -y curl flex bison libgmp3-dev libmpfr-dev autoconf libncurses5-dev libmpc-dev texinfo; \
@@ -87,7 +87,7 @@ RUN apt-get update; \
     apt-get purge -y adduser passwd; \
     apt-get autoremove -y; apt-get clean; rm /var/lib/apt/lists/* -r; rm -rf /usr/share/man/*
 
-RUN echo 'export PATH="/usr/lib/colorgcc/:$PATH"' >> /home/builder/.bashrc; \
+RUN echo 'export PATH="/usr/lib/colorgcc/:/usr/local/avr-32/bin/:$PATH"' >> /home/builder/.bashrc; \
     echo 'export TERM="xterm"'                    >> /home/builder/.bashrc; 
 
 COPY bg.sh run.sh /
