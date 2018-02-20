@@ -60,7 +60,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get --quiet --yes update; \
     curl -L -O https://github.com/noah95/avr32-toolchain/archive/master.zip; \
     unzip master.zip; \
     cd avr32-toolchain-master; \
-    sudo PREFIX=/usr/local/avr32/ make install-cross; \
+    sudo PREFIX=/usr/local/ make install-cross; \
     cd ..; \
     rm -rf master.zip avr32-toolchain-master; \
     apt-get purge -y curl flex bison libgmp3-dev libmpfr-dev autoconf libncurses5-dev libmpc-dev texinfo; \

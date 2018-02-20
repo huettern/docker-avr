@@ -45,7 +45,7 @@
 #gcj:/usr/bin/gcj
 
 # avr-gcc
-gcc: /usr/bin/avr-gcc
+avr-gcc: /usr/bin/avr-gcc
 avr32-gcc: /usr/local/avr32/bin/avr32-gcc
 
 # Don't do color if our terminal type ($TERM) is one of these.
