@@ -9,35 +9,59 @@
 # PROGRAMMER     Options to avrdude
 # FUSES          Parameters for avrdude to flash the fuses appropriately.
 
-DEVICE     = attiny2313
+######################################################################
+MCU            = uc3c1512c
+PART           = AVR32_UC3C1512CREVC
+AVRDUDEDEVICE  = 
+
 CLOCK      = 8000000
 PROGRAMMER = -c arduino -P /dev/tty.usb* -b 19200 
 OBJECTS    = main.o
 FUSES      = -U lfuse:w:0x64:m -U hfuse:w:0xdd:m -U efuse:w:0xff:m
-
 ######################################################################
 
-AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE)
-CC = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
-OBJCOPY = avr-objcopy
+# C Header files
+INC    = loop.h defs.h
+INCDIR = -I/usr/local/avr32/atmel-headers-6.1.3.1475
+# C sources
+CSRC    = main.c
+COBJ    = $(CSRC:.c=.o)
+# Libraries
+LIBS   = 
+# output name
+TARGET = main
 
-# symbolic targets:
-all: main.hex
 
-.c.o:
-	$(CC) -c $< -o $@
+######################################################################
+# binaries
+CC      = avr32-gcc
+OBJCOPY = avr32-objcopy
 
-.S.o:
-	$(CC) -x assembler-with-cpp -c $< -o $@
-# "-x assembler-with-cpp" should not be necessary since this is the default
-# file type for the .S (with capital S) extension. However, upper case
-# characters are not always preserved on Windows. To ensure WinAVR
-# compatibility define the file type manually.
+RM      = rm -rf
 
-.c.s:
-	$(CC) -S $< -o $@
+AVRDUDE = avrdude $(PROGRAMMER) -p $(AVRDUDEDEVICE)
 
-flash:	all
+# Flags
+CFLAGS  = -Wall -DF_CPU=$(CLOCK) -D$(PART) -mmcu=$(DEVICE)
+LIBPATH = -L.
+LDFLAGS = -o $(TARGET) $(LIBPATH) $(LIBS)
+
+
+# Compile and Assemble C Source Files into Object Files
+%.o: %.c
+       $(CC) $(CFLAGS) -c $< -o $@
+
+# Link all Object Files with external Libraries into Binaries
+$(TARGET).elf: $(COBJ)
+       $(CC) $(LDFLAGS) $(COBJ)
+
+$(TARGET).hex: $(TARGET).elf
+       $(OBJCOPY) -j .text -j .data -O ihex $(TARGET).elf $(TARGET).hex
+
+# Objects depend on these Libraries
+$(COBJ): $(INC)
+
+flash:	$(TARGET)
 	$(AVRDUDE) -U flash:w:main.hex:i
 
 fuse:
@@ -45,14 +69,15 @@ fuse:
 
 install: flash fuse
 
+# default target
+all: $(TARGET).hex
+
+# Clean Up Objects, Exectuables, Dumps out of source directory
 clean:
-	rm -f main.hex main.elf $(OBJECTS)
+       $(RM) $(COBJ) $(TARGET).elf $(TARGET).hex
 
-# file targets:
-main.elf: $(OBJECTS)
-	$(CC) -o main.elf $(OBJECTS)
+.PHONY: all clean flash fuse install
+######################################################################
 
-main.hex: main.elf
-	rm -f main.hex
-	$(OBJCOPY) -j .text -j .data -O ihex main.elf main.hex
+
 
