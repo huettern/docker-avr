@@ -13,7 +13,7 @@ ARGS=$@
 # c++: /usr/lib/ccache/g++
 # cc: /usr/lib/ccache/cc
 
-export PATH="/usr/lib/colorgcc/:$PATH"
+export PATH="/usr/lib/colorgcc/:/usr/local/avr-32/bin/:$PATH"
 export TERM="xterm"
 
 
